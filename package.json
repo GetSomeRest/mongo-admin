@@ -1,0 +1,13 @@
+{
+  "name": "AdnMongoAdmin",
+
+    "version": "1.0.0",
+
+  "dependencies": {
+    "serve-favicon": "*",
+    "body-parser": "*",
+    "express": "*",
+    "mongodb": "~2.0",
+    "util": "*"
+  }
+}

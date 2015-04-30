@@ -1,0 +1,172 @@
+<style>
+
+  .over-line{
+    border-color: #ff6000 !important;
+  }
+
+  .box {
+    border: 3px solid #E7E7E7;
+    border-radius: 6px 6px 6px 6px;
+    margin: 0px;
+    padding: 20px 10px 20px 10px;
+  }
+
+  .treebox {
+    overflow: auto;
+    max-height: 500px;
+  }
+
+  .droptreebox {
+    overflow: auto;
+    max-height: 300px;
+  }
+
+  .c-ul {border: 1px solid #FFFFFF;}
+  .c-li {background-color: #FFFFFF;}
+  .c-liSelected {background-color: #FFFFFF;}
+  .c-iExpanded {border: 1px solid #FFFFFF}
+  .c-iCollapsed {border: 1px solid #FFFFFF}
+  .c-iLeaf {border: 1px solid #FFFFFF}
+
+  treecontrol.tree-light li.tree-leaf {
+    font-weight: normal;
+  }
+
+  treecontrol.tree-light li .tree-selected {
+    font-weight: normal;
+  }
+
+  .console {
+    padding: 20px 50px 0px 50px;
+    background-color: #ffffff;
+    height: 100%;
+  }
+
+</style>
+
+<div class="console">
+
+  <div ng-include="'ui/jsoneditor/jsoneditor.html'"> </div>
+
+  <div class="box" >
+
+    <div class="row">
+      <div class="col-md-2">
+        Select collection:
+        <br>
+
+        <ui-select ng-model="collection.selected" theme="selectize" ng-disabled="disabled" title="Select or search a collection...">
+          <ui-select-match placeholder="Select collection">{{$select.selected.label}}</ui-select-match>
+          <ui-select-choices repeat="collection in collections | filter: $select.search">
+            <span ng-bind-html="collection.name "></span>
+          </ui-select-choices>
+        </ui-select>
+
+      </div>
+
+      <div class="col-md-3">
+        Create collection:
+        <br>
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="input-group">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="addCollection()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Add
+              </button>
+            </span>
+            <input type="text" class="form-control" placeholder="Collection name..." id="newColName">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        Filter items:
+        <br>
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="input-group">
+            <span class="input-group-btn">
+              <button type="button"
+                      ng-class="filterActivated ? 'btn btn-success' : 'btn btn-default'"
+                      aria-label="Left Align"
+                      ng-click="activateFilter()">
+                <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+                {{filterCaption}}
+              </button>
+            </span>
+              <input type="text" class="form-control" placeholder="Filter value..." ng-model="filterValue">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        Mongo query:
+        <br>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="input-group">
+            <span class="input-group-btn">
+              <button type="button"
+                      class="btn btn-default"
+                      aria-label="Left Align"
+                      ng-click="sendQuery()">
+                <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+                Run
+              </button>
+            </span>
+              <input type="text" class="form-control" placeholder='Enter query. Ex: {"name":"value"}' id="queryValue">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <br>
+
+  <div class="box droptreebox" id="dropzone">
+
+    <div id="tree-box-list" aria-dropeffect="copy execute">
+      {{dropMessage}}
+    </div>
+
+    <treecontrol class="tree-light"
+                 tree-model="dropTreeNodes"
+                 options="treeOptions"
+                 expanded-nodes="dropExpandedNodes"
+                 on-selection="onDropNodeSelected(node, selected)">
+
+      <b ng-style="node.selected ? { 'color':'#FF0000'} : { 'color':'#00'}">{{node.label}}</b>{{node.value}}
+
+    </treecontrol>
+
+  </div>
+
+  <br>
+
+  <div id="itemsId" class="box treebox">
+
+    <treecontrol class="tree-light"
+                 tree-model="treeNodes"
+                 filter-expression="nodeFilter"
+                 options="treeOptions"
+                 expanded-nodes="expandedNodes"
+                 on-selection="onNodeSelected(node, selected)">
+
+      <b ng-style="node.selected ? { 'color':'#FF0000'} : { 'color':'#00'}">{{node.label}}</b>{{node.value}}
+
+    </treecontrol>
+
+  </div>
+
+  <br>
+
+  <div style="min-height: 100px">
+  </div>
+
+</div>
