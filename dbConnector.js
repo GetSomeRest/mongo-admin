@@ -22,16 +22,26 @@ module.exports = {
 
   initializeDb: function(config, onSuccess, onError){
 
-    var url = util.format('mongodb://%s:%s@%s:%d/%s',
-      config.user,
-      config.pass,
-      config.host,
-      config.port,
-      config.db);
+    var url = '';
+
+    if(config.user.length && config.pass.length) {
+
+      url = util.format('mongodb://%s:%s@%s:%d/%s',
+        config.user,
+        config.pass,
+        config.host,
+        config.port,
+        config.db);
+    }
+    else {
+
+      url = util.format('mongodb://%s:%d/%s',
+        config.host,
+        config.port,
+        config.db);
+    }
 
     var client = mongo.MongoClient;
-
-    //url = "mongodb://localhost:27017/NodeViewDb";
 
     client.connect(url, function(err, db) {
 

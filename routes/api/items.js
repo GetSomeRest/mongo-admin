@@ -18,6 +18,7 @@
 var dbConnector = require('../../dbConnector');
 var config = require('../../config-server');
 var express = require('express');
+var mongo = require('mongodb');
 
 var router = express.Router();
 
@@ -119,7 +120,7 @@ router.get('/:collectionName/:itemId', function (req, res) {
 
       collection.findOne(
 
-        { '_id': itemId},
+        { '_id': new mongo.ObjectID(itemId)},
 
         function (error, item) {
 
@@ -145,6 +146,10 @@ router.post('/:collectionName', function (req, res) {
   var collectionName = req.params.collectionName;
 
   var item = req.body.item;
+
+  if(typeof item._id !== 'undefined') {
+    item._id = new mongo.ObjectID(item._id);
+  }
 
   db.collection(collectionName, function (colError, collection) {
 
@@ -177,10 +182,14 @@ router.put('/:collectionName', function (req, res) {
 
   var item = req.body.item;
 
+  if(typeof item._id !== 'undefined') {
+    item._id = new mongo.ObjectID(item._id);
+  }
+
   db.collection(collectionName, function (colError, collection) {
 
     collection.update(
-      { _id: item._id },
+      { _id: new mongo.ObjectID(item._id) },
       item,
 
       function (error, result) {
@@ -211,7 +220,7 @@ router.delete('/:collectionName/:itemId', function (req, res) {
   db.collection(collectionName, function (colErr, collection) {
 
     collection.remove(
-      { _id: itemId },
+      { _id: new mongo.ObjectID(itemId) },
       null,
       function (error, result) {
 

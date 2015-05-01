@@ -38,11 +38,27 @@ angular.module('Autodesk.ADN.MongoAdmin.Dialog.JsonEditor',
 
         var editor = new JSONEditor(container);
 
-        var editedNode = null;
+        ///////////////////////////////////////////////////////////////////////
+        //
+        //
+        ///////////////////////////////////////////////////////////////////////
+        $scope.$on('edit-query',
 
-        var editedItemId = null;
+          function (event, data) {
 
-        $scope.caption = "";
+              $scope.caption = "Edit Mongo Query";
+
+              editor.set(data.query);
+
+              $('#jsonEditorDlg').modal('show');
+
+              $scope.onOk = function() {
+
+                  $scope.$emit('query-edited', {
+                      query: editor.get()
+                  });
+              };
+          });
 
         ///////////////////////////////////////////////////////////////////////
         //
@@ -52,34 +68,35 @@ angular.module('Autodesk.ADN.MongoAdmin.Dialog.JsonEditor',
 
           function (event, data) {
 
-              editedNode = data.node;
+              var editedNode = data.node;
 
-              editedItemId = data.node.item._id;
+              var editedItemId = data.node.item._id;
 
-              $scope.caption = "Editing Item [" + editedItemId + "]";
+              $scope.caption = "Edit Item [" + editedItemId + "]";
 
               delete editedNode.item._id;
 
               editor.set(editedNode.item);
 
               $('#jsonEditorDlg').modal('show');
+
+              $scope.onOk = function() {
+
+                  editedNode.item = editor.get();
+
+                  editedNode.item._id = editedItemId;
+
+                  $scope.$emit('item-edited', {
+
+                      node: editedNode
+                  });
+              };
           });
 
         ///////////////////////////////////////////////////////////////////////
         //
         //
         ///////////////////////////////////////////////////////////////////////
-        $scope.onOk = function() {
-
-            editedNode.item = editor.get();
-
-            editedNode.item._id = editedItemId;
-
-            $scope.$emit('item-edited', {
-                node: editedNode
-            });
-        }
-
         $scope.onCancel = function() {
 
         }

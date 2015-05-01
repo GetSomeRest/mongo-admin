@@ -212,6 +212,7 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
         if(queryStr.length){
 
           try {
+
             var query = JSON.parse(queryStr);
 
             Item.query(
@@ -249,6 +250,50 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
           }
         }
       }
+
+      ///////////////////////////////////////////////////////////////////////
+      //
+      //
+      ///////////////////////////////////////////////////////////////////////
+      $scope.onDblClick = function() {
+
+        var queryStr = $('#queryValue').val();
+
+        try {
+
+          var query = JSON.parse(queryStr);
+
+          $scope.$broadcast('edit-query', {
+            query: query
+          });
+        }
+        catch (ex) {
+
+          $scope.$broadcast('edit-query', {
+            query: {}
+          });
+          }
+      }
+
+      ///////////////////////////////////////////////////////////////////////
+      //
+      //
+      ///////////////////////////////////////////////////////////////////////
+      $scope.$on('query-edited',
+
+        function (event, data) {
+
+          try {
+
+            var queryStr = JSON.stringify(data.query);
+
+            if(queryStr !== "{}")
+              $('#queryValue').val(queryStr);
+          }
+          catch (ex) {
+
+          }
+        });
 
       ///////////////////////////////////////////////////////////////////////
       //
@@ -307,17 +352,19 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
       ///////////////////////////////////////////////////////////////////////
       function loadCollections() {
 
-        Collection.all(function(collections) {
+        $scope.collections = [];
 
-            //removes system.indexes
-            collections.shift();
+        Collection.all(function(collections) {
 
             collections.forEach(function(collection){
 
-              collection.label = $sce.trustAsHtml(collection.name);
-            });
+              if(collection.name !== 'system.indexes') {
 
-            $scope.collections = collections;
+                collection.label = $sce.trustAsHtml(collection.name);
+
+                $scope.collections.push(collection);
+              }
+            });
           }
         );
       }
@@ -634,7 +681,7 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
             },
             //error
             function(error){
-              console.log("error updating item: ");
+              console.log("Error updating item: ");
               console.log(error);
             }
           );
@@ -663,7 +710,7 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
           },
           //error
           function(error){
-            console.log("error inserting item: ");
+            console.log("Error inserting item: ");
             console.log(error);
           }
         );
@@ -715,8 +762,6 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
 
             var node = treeNodesSelected[id];
 
-            console.log('Removing item: ' + node.item._id);
-
             Item.delete(
               {
                 collectionName: collectionName,
@@ -727,15 +772,12 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
             .$promise.then(
               //success
               function(value){
-
                 delete treeNodesSelected[node.id];
-                console.log("success: ");
-                console.log(value);
                 callback();
               },
               //error
               function(error){
-                console.log("error removing item: ");
+                console.log("Error removing item: ");
                 console.log(error);
                 callback();
               }
@@ -753,8 +795,6 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
       ///////////////////////////////////////////////////////////////////////
       function onDeleteCollection (key, opt) {
 
-        console.log('Deleting ' + $scope.treeNodes[0].label);
-
         var collectionName = $scope.treeNodes[0].label;
 
         Collection.delete(
@@ -763,16 +803,26 @@ angular.module('Autodesk.ADN.MongoAdmin.View.Console',
         .$promise.then(
           //success
           function(response){
-            console.log("Colection deleted: " + collectionName);
+
             $scope.collection = {};
-            var idx = $scope.collections.indexOf(collectionName);
-            $scope.collections.splice(idx, 1);
+
+            //removes collection from $scope.collections array
+            for(var i=0; i<$scope.collections.length; ++i) {
+
+                if(collectionName === $scope.collections[i].name){
+
+                  $scope.collections.splice(i, 1);
+                  break;
+                }
+            };
+
             $scope.treeNodes = [];
+
             treeNodesSelected = {};
           },
           //error
           function(error){
-            console.log("error deleting collection: ");
+            console.log("Error deleting collection: ");
             console.log(error);
           }
         );
