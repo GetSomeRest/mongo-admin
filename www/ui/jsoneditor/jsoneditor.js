@@ -38,6 +38,10 @@ angular.module('Autodesk.ADN.MongoAdmin.Dialog.JsonEditor',
 
         var editor = new JSONEditor(container);
 
+        var editedItemId = null;
+
+        var editedNode = null;
+
         ///////////////////////////////////////////////////////////////////////
         //
         //
@@ -68,9 +72,9 @@ angular.module('Autodesk.ADN.MongoAdmin.Dialog.JsonEditor',
 
           function (event, data) {
 
-              var editedNode = data.node;
+              editedNode = data.node;
 
-              var editedItemId = data.node.item._id;
+              editedItemId = data.node.item._id;
 
               $scope.caption = "Edit Item [" + editedItemId + "]";
 
