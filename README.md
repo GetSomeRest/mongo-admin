@@ -1,5 +1,6 @@
 #Mongo Admin Sample
 
+**This sample is now retired, it is not maintained anymore.** It is provided as-is and we discourage using it in your production code. 
 
 ##Description
 
