@@ -1,8 +1,10 @@
-#Mongo Admin Sample
+# Deprecated sample - not maintained anymore (Summer 2016)
+
+# Mongo Admin Sample
 
 **This sample is now retired, it is not maintained anymore.** It is provided as-is and we discourage using it in your production code. 
 
-##Description
+## Description
 
 
 That sample implements a basic administration console for a Mongo database. Frontend is implemented using AngularJS components
@@ -16,7 +18,7 @@ Install dependencies before running the app by running "npm install" command fro
  - mongodb
  - util
 
-##Setup/Usage Instructions
+## Setup/Usage Instructions
 
 * Install Node.js
 * Run "npm install" command from the server directory
@@ -29,7 +31,7 @@ Install dependencies before running the app by running "npm install" command fro
 
 That samples are licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT). Please see the [LICENSE](LICENSE) file for full details.
 
-##Written by 
+## Written by 
 
 Written by [Philippe Leefsma](http://adndevblog.typepad.com/cloud_and_mobile/philippe-leefsma.html)
 
